@@ -1,0 +1,22 @@
+plugins {
+    id 'com.palantir.docker' version '0.35.0'
+}
+
+
+tasks.register('copyDataPrepper', Copy) {
+    from '../data-prepper'
+    into "${project.buildDir}/docker/data-prepper"
+    exclude 'release'
+    exclude '**/build'
+}
+
+docker {
+    name 'data-prepper-image-build:latest'
+    tag 'data-prepper-image-build', 'latest'
+    copySpec
+            .from("${project.projectDir}/../data-prepper")
+            .into('data-prepper')
+            .exclude('release')
+            .exclude('**/build')
+    dockerfile file('docker/Dockerfile')
+}
